@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="qianxianUISkin" width="640" height="1016" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="118" height="124" x="67" y="508" anchorOffsetX="0" anchorOffsetY="0" source="ren_png"/>
+	<e:Image width="118" height="124" x="232" y="508" anchorOffsetX="0" anchorOffsetY="0" source="ren_png"/>
+	<e:Image width="118" height="124" x="405" y="508" anchorOffsetX="0" anchorOffsetY="0" source="ren_png"/>
+</e:Skin>

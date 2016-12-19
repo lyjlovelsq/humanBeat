@@ -64,7 +64,7 @@ class Main extends eui.UILayer {
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
         RES.addEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
-        RES.loadGroup("preload");
+        RES.loadGroup("loading");
     }
     private isThemeLoadEnd: boolean = false;
     /**
@@ -81,15 +81,32 @@ class Main extends eui.UILayer {
      * preload resource group is loaded
      */
     private onResourceLoadComplete(event:RES.ResourceEvent):void {
-        if (event.groupName == "preload") {
-            this.stage.removeChild(this.loadingView);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
-            RES.removeEventListener(RES.ResourceEvent.GROUP_PROGRESS, this.onResourceProgress, this);
-            RES.removeEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.onItemLoadError, this);
-            this.isResourceLoadEnd = true;
-            this.createScene();
-        }
+        switch (event.groupName ) {
+            case "loading":
+                console.log( "loading ok:", egret.getTimer() );
+                if( this.loadingView.parent ){
+                    this.loadingView.parent.removeChild( this.loadingView );
+                }
+
+    
+                this._loadingBg = new egret.Bitmap(RES.getRes("loading_bg"));
+                this.addChild( this._loadingBg );
+                
+                this._trueLoadingUI = new TrueLoadingUI();
+                this.loadPage( "home" );
+                break;
+            case "home":
+                console.log( "home ok:", egret.getTimer() );
+                /// clearRESEvents
+                this.isResourceLoadEnd = true;
+                this.createScene();
+                break;
+            //case "profile": 
+            default :
+                console.log( "\tpage["+event.groupName+"]ok:", egret.getTimer() );
+                this.pageLoadedHandler( event.groupName );
+                break;
+        } 
     }
     private createScene(){
         if(this.isThemeLoadEnd && this.isResourceLoadEnd){
@@ -123,132 +140,64 @@ class Main extends eui.UILayer {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
         }
     }
-    private textfield:egret.TextField;
-    /**
+
+ /**
      * 创建场景界面
      * Create scene interface
      */
     protected startCreateScene(): void {
-        let sky:egret.Bitmap = this.createBitmapByName("bg_jpg");
-        this.addChild(sky);
-        let stageW:number = this.stage.stageWidth;
-        let stageH:number = this.stage.stageHeight;
-        sky.width = stageW;
-        sky.height = stageH;
+        console.log( "this._trueLoadingUI.parent:", Boolean(this._trueLoadingUI.parent) );
+        
+        /// 主页特殊，其他页都需要传参数
+        this.pageLoadedHandler( "home" );
 
-        let topMask = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, 172);
-        topMask.graphics.endFill();
-        topMask.y = 33;
-        this.addChild(topMask);
-
-        let icon:egret.Bitmap = this.createBitmapByName("egret_icon_png");
-        this.addChild(icon);
-        icon.x = 26;
-        icon.y = 33;
-
-        let line = new egret.Shape();
-        line.graphics.lineStyle(2,0xffffff);
-        line.graphics.moveTo(0,0);
-        line.graphics.lineTo(0,117);
-        line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
-        this.addChild(line);
-
-
-        let colorLabel = new egret.TextField();
-        colorLabel.textColor = 0xffffff;
-        colorLabel.width = stageW - 172;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 24;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
-        this.addChild(colorLabel);
-
-        let textfield = new egret.TextField();
-        this.addChild(textfield);
-        textfield.alpha = 0;
-        textfield.width = stageW - 172;
-        textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
-        textfield.textColor = 0xffffff;
-        textfield.x = 172;
-        textfield.y = 135;
-        this.textfield = textfield;
-
-        //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
-        // Get asynchronously a json configuration file according to name keyword. As for the property of name please refer to the configuration file of resources/resource.json.
-        RES.getResAsync("description_json", this.startAnimation, this);
-
-        let button = new eui.Button();
-        button.label = "Click!";
-        button.horizontalCenter = 0;
-        button.verticalCenter = 0;
-        this.addChild(button);
-        button.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onButtonClick, this);
-    }
-    /**
-     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
-     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
-     */
-    private createBitmapByName(name:string):egret.Bitmap {
-        let result = new egret.Bitmap();
-        let texture:egret.Texture = RES.getRes(name);
-        result.texture = texture;
-        return result;
-    }
-    /**
-     * 描述文件加载成功，开始播放动画
-     * Description file loading is successful, start to play the animation
-     */
-    private startAnimation(result:Array<any>):void {
-        let self:any = this;
-
-        let parser = new egret.HtmlTextParser();
-        let textflowArr:Array<Array<egret.ITextElement>> = [];
-        for (let i:number = 0; i < result.length; i++) {
-            textflowArr.push(parser.parser(result[i]));
+        if( this._loadingBg.parent ){
+            this._loadingBg.parent.removeChild( this._loadingBg );
         }
+        
+        this._homeUI = new BaseViewController();
+        this._homeUI.addEventListener( GameEvents.EVT_LOAD_PAGE, ( evt:egret.Event )=>{
+            console.log( "EVT_LOAD_PAGE:", evt.data );
+            this.loadPage( evt.data );
 
-        let textfield = self.textfield;
-        let count = -1;
-        let change:Function = function () {
-            count++;
-            if (count >= textflowArr.length) {
-                count = 0;
-            }
-            let lineArr = textflowArr[count];
-
-            self.changeDescription(textfield, lineArr);
-
-            let tw = egret.Tween.get(textfield);
-            tw.to({"alpha": 1}, 200);
-            tw.wait(2000);
-            tw.to({"alpha": 0}, 200);
-            tw.call(change, self);
-        };
-
-        change();
+            console.log( "页面就绪:"  );
+        }, this );
+        this.addChild( this._homeUI );
     }
-    /**
-     * 切换描述内容
-     * Switch to described content
-     */
-    private changeDescription(textfield:egret.TextField, textFlow:Array<egret.ITextElement>):void {
-        textfield.textFlow = textFlow;
+    
+    loadPage( pageName:string ):void{
+        this.addChild( this._trueLoadingUI );
+        this.idLoading = pageName;
+        switch ( pageName ){
+            case "heros":
+            case "goods":
+                RES.loadGroup( "heros_goods" );
+                break;
+            default :
+                RES.loadGroup( pageName );
+                break;
+        }
     }
-    /**
-     * 点击按钮
-     * Click the button
-     */
-    private onButtonClick(e: egret.TouchEvent) {
-        let panel = new eui.Panel();
-        panel.title = "Title";
-        panel.horizontalCenter = 0;
-        panel.verticalCenter = 0;
-        this.addChild(panel);
+    private idLoading:string;
+    
+    pageLoadedHandler( name:string ):void{
+        if( name != "home" ){
+            this._homeUI.pageReadyHandler( this.idLoading );
+        }
+        if( this._trueLoadingUI.parent ){
+            this._trueLoadingUI.parent.removeChild( this._trueLoadingUI );
+        }
     }
+    
+    private _trueLoadingUI:TrueLoadingUI;
+    private _homeUI:BaseViewController;
+
+    private _loadingBg: egret.Bitmap;
+
+
+
+
+
+
+
 }
