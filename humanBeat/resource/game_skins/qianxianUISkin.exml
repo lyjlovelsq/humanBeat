@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e:Skin class="qianxianUISkin" width="640" height="1016" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
-	<e:Image id="qianxianbg" width="640" height="1016" x="0" y="0" source="qianxianbg_png"/>
+<e:Skin class="qianxianUISkin" width="640" height="1136" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image id="qianxianbg" width="640" height="1016" x="0" y="60" source="frontlineBg_png"/>
+	<e:Image id="base"  source="base_png"  horizontalCenter="0" bottom="100"/>
 	<e:Image width="88" height="69" x="420" y="316" source="gou_png" anchorOffsetX="0" anchorOffsetY="0"/>
 	<e:Image width="88" height="69" x="176" y="191" source="gou_png" anchorOffsetX="0" anchorOffsetY="0"/>
 	<e:Image width="88" height="69" x="291" y="156.5" source="gou_png" anchorOffsetX="0" anchorOffsetY="0"/>

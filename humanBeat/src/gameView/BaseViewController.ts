@@ -6,27 +6,45 @@ class BaseViewController extends eui.Component{
 
     constructor( ) {
         super();
-
-        //console.log( "new HomeUI 资源：", RES.getRes( "commonBg_jpg" ) );
         this.addEventListener( eui.UIEvent.COMPLETE, this.uiCompHandler, this );
         this.skinName = "resource/game_skins/homeUISkin.exml";
     }
 
     private uiCompHandler():void {
         console.log( "HomeUI uiCompHandler");
-
-
+        //添加时间监听函数
+        this.addTicker();
         this.mbtnYaosai.addEventListener( egret.TouchEvent.TOUCH_TAP, this.mbtnHandler, this );
-        this.mbtnQianxian.addEventListener( egret.TouchEvent.TOUCH_TAP, this.mbtnHandler, this );
+        this.mbtnFrontLine.addEventListener( egret.TouchEvent.TOUCH_TAP, this.mbtnHandler, this );
         this.mbtnHeros.addEventListener( egret.TouchEvent.TOUCH_TAP, this.mbtnHandler, this );
-       
-
-        
-        this.btns = [this.mbtnYaosai,this.mbtnQianxian,this.mbtnHeros];
+        this.btns = [this.mbtnYaosai,this.mbtnFrontLine,this.mbtnHeros];
         
         /// 首次加载完成首先显示home
         this.goHome(); 
     }
+
+    private addTicker(){
+        console.log("start Ticker");
+        egret.startTick(this.onTicker, this);
+    }
+
+    private _time:number;
+    private onTicker(timeStamp:number):boolean{
+        if(!this._time){
+            this._time = timeStamp;
+        }
+        var now = timeStamp;
+        var pass = now - this._time;
+        console.log("passTime:"+pass);
+        if(pass >= GameConstants.timeIndeval){
+            UserModel.getSharedInstance().mineralNum += GameConstants.autoAddNums;
+            this.refreshMineralText();
+            this._time = now;
+        }
+        return true;
+    }
+
+
     private  btns:eui.ToggleButton[];
     
     private resetFocus():void{
@@ -47,12 +65,10 @@ class BaseViewController extends eui.Component{
     private goHome():void{
         console.log( " ---------- HOME ---------- " );
         this._pageFocusedPrev = this._pageFocused = "home";
-        console.log( "this.mbtnQianxian:",this.mbtnQianxian.selected );
+        console.log( "this.mbtnFrontLine:",this.mbtnFrontLine.selected );
     }
     
     private mbtnHandler( evt:egret.TouchEvent ):void{
-
-
         /// 已经选中不应当再处理!
         if( evt.currentTarget == this._mbtnFocused ) {
             console.log( evt.currentTarget.name, "已经选中不应当再处理!" );
@@ -61,7 +77,6 @@ class BaseViewController extends eui.Component{
         /// 逻辑生效，所有按钮锁定
         for( var i:number = this.btns.length - 1; i > -1; --i ){
             this.btns[i].enabled = false;
-            
         }
 
         /// 移除上一焦点对应的按钮
@@ -86,13 +101,13 @@ class BaseViewController extends eui.Component{
         this._pageFocusedPrev = this._pageFocused;
         switch ( this._mbtnFocused ){
             case this.mbtnYaosai:
-                this._pageFocused ="";
+                this._pageFocused ="fortress";
                 break;
-            case this.mbtnQianxian:
+            case this.mbtnFrontLine:
                 this._pageFocused ="qianxian";
                 break;
             case this.mbtnHeros:
-                this._pageFocused ="";
+                this._pageFocused ="Commander";
                 break;
 
         }
@@ -104,23 +119,23 @@ class BaseViewController extends eui.Component{
         super.createChildren();
     }
 
-    private mbtnQianxian:eui.ToggleButton;
+    private mbtnFrontLine:eui.ToggleButton;
     private mbtnHeros:eui.ToggleButton;
     private mbtnYaosai:eui.ToggleButton;
     private _mbtnFocused:eui.ToggleButton;
     
-    private _qianxianUI:qianxianUI;
-    // private _herosUI:HerosUI;
-    // private _goodsUI:GoodsUI;
+    private _FrontlineViewController:FrontlineViewController;
+    private _commanderView:CommanderViewController;
+    private _fortressView:FortressViewController; 
 
     private _uiFocused:eui.Component;
     
     private homebg:eui.Image;
+    private mineralLabel:eui.Label;
     
     private _pageFocused:string;
 
     public pageReadyHandler( pageName:String ):void {
-        
         /// 页面加载完成，所有非焦点按钮解锁
         for( var i:number = this.btns.length - 1; i > -1; --i ){
             this.btns[i].enabled = ! this.btns[i].selected;
@@ -128,32 +143,52 @@ class BaseViewController extends eui.Component{
         }
         
         switch ( pageName ){
-
             case "qianxian":
-                if( !this._qianxianUI ){
-
-
-                    this._qianxianUI = new qianxianUI();
-                    this._qianxianUI.addEventListener( GameEvents.EVT_RETURN, ()=>{
+                if( !this._FrontlineViewController ){
+                    this._FrontlineViewController = new FrontlineViewController();
+                    this._FrontlineViewController.addEventListener( GameEvents.EVT_RETURN, ()=>{
                         this.resetFocus();
-                    
                         this.goHome();
                     }, this );
-
-                   
+                    this._FrontlineViewController.addEventListener(GameEvents.EVT_ADD_MINERAL, ()=>{
+                        this.refreshMineralText();
+                    }, this);
                 }
                 // this.imgBg.source = "bgListPage_jpg";
-                this._uiFocused = this._qianxianUI;
-
-                
+                this._uiFocused = this._FrontlineViewController;
                 break;
-         
+            case "Commander":
+                if(!this._commanderView){
+                    this._commanderView = new CommanderViewController();
+                    this._commanderView.addEventListener(GameEvents.EVT_RETURN, ()=>{
+                        this.resetFocus();
+                        this.goHome;
+                    }
+                    , this);
+                }
+                this._uiFocused = this._commanderView;
+                break;
+            case "fortress":
+                if(!this._fortressView){
+                    this._fortressView = new FortressViewController();
+                    this._fortressView.addEventListener(GameEvents.EVT_RETURN, ()=>{
+                        this.resetFocus();
+                        this.goHome;
+                    }
+                    , this);
+                }
+                this._uiFocused = this._fortressView;
+                break;
+
         }
         /// 总是把页面放在背景的上一层！
-
-        
-        this._uiFocused.y=60
         this.addChildAt( this._uiFocused, this.getChildIndex( this.homebg ) + 1 );
-        console.log( "this.mbtnQianxian:",this.mbtnQianxian.selected );
+        console.log( "this.mbtnFrontLine:",this.mbtnFrontLine.selected );
     }
+
+    private refreshMineralText(){
+        this.mineralLabel.text = UserModel.getSharedInstance().mineralNum.toFixed(1);
+    }
+
+    
 }

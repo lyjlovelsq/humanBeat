@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e:Skin class="homeUISkin" width="640" height="1136" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
 	<e:Image id="homebg" width="640" height="1136" x="0" y="0" fillMode="scale" source="homebg_jpg"/>
+	<e:Image  width="80" height="80" left="20" top="0" source="mineral_png"/>
+	<e:Label id="mineralLabel" text="0" x="30" y="10" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center" textColor="0x00eeff"/>
+	<e:Image  width="80" height="80" x="200" top="0" source="gas_png"/>
+	<e:Label id="gasLabel" text="0" x="215" y="10" textColor="0x5eff00" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center"/>
+	<e:Image  width="80" height="80" x="400" top="0" source="artifact_png"/>
+	<e:Label id="artifactLabel" text="0" x="430" y="10" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center" textColor="0xff7200"/>
+	
 	<e:ToggleButton id="mbtnYaosai" label="要塞" x="0" y="1076" width="210" height="60">
 		<e:skinName>
-			<e:Skin states="up,down,disabled">
-			<e:Image width="100%" height="100%" source="mbtn_Bg_png" source.down="mbtn_BgFc_png"/>
+			<e:Skin states="up,down,disabled,disabledAndSelected">
+			<e:Image width="100%" height="100%" source.disabledAndSelected="mbtn_BgFc_png" source="mbtn_Bg_png" source.down="mbtn_BgFc_png" />
 			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
 			</e:Skin>
 		</e:skinName>
 	</e:ToggleButton>
 	<e:ToggleButton id="mbtnHeros" label="指挥官" x="430" y="1076" width="210" height="60">
-		<e:Skin states="up,down,disabled">
-		<e:Image width="100%" height="100%" source="mbtn_Bg_png" source.down="mbtn_BgFc_png"/>
+		<e:Skin states="up,down,disabled,disabledAndSelected">
+		<e:Image width="100%" height="100%" source.disabledAndSelected="mbtn_BgFc_png" source="mbtn_Bg_png" source.down="mbtn_BgFc_png"/>
 		<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
 		</e:Skin>
 	</e:ToggleButton>
-	<e:ToggleButton id="mbtnQianxian" label="前线" x="215" y="1076" width="210" height="60">
-		<e:Skin states="up,down,disabled">
-		<e:Image width="100%" height="100%" source="mbtn_Bg_png" source.down="mbtn_BgFc_png"/>
+	<e:ToggleButton id="mbtnFrontLine" label="前线" x="215" y="1076" width="210" height="60">
+		<e:Skin states="up,down,disabled,disabledAndSelected">
+		<e:Image width="100%" height="100%" source.disabledAndSelected="mbtn_BgFc_png" source="mbtn_Bg_png" source.down="mbtn_BgFc_png"/>
 		<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
 		</e:Skin>
 	</e:ToggleButton>
-	<e:Label id="Gas" text="瓦斯" x="215" y="0" textColor="0x5eff00" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center"/>
-	<e:Label id="crystal" text="水晶" x="0" y="0" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center" textColor="0x00eeff"/>
-	<e:Label id="Artifact" text="神器" x="430" y="0" size="50" width="210" fontFamily="Microsoft YaHei" textAlign="center" textColor="0xff7200"/>
 </e:Skin>

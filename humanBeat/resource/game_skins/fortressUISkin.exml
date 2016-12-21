@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="fortressUISkin" width="640" height="1080" xmlns:e="http://ns.egret.com/eui">
+    <e:Image  x="0" y="0" anchorOffsetX="0" anchorOffsetY="0" source="zhuteacher_png"/>
+</e:Skin>

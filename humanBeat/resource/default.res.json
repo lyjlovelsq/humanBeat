@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "homebg_jpg,mbtn_Bg_png,mbtn_BgFc_png",
+			"keys": "homebg_jpg,mbtn_Bg_png,mbtn_BgFc_png,frontlineBg_png,base_png",
 			"name": "home"
 		},
 		{
@@ -11,6 +11,14 @@
 		{
 			"keys": "gou_png,qianxianbg_png,ren_png",
 			"name": "qianxian"
+		},
+		{
+			"keys": "zhuteacher_png",
+			"name": "fortress"
+		},
+		{
+			"keys": "base_png,frontlineBg_png,gas_png,mineral_png,artifact_png",
+			"name": "preload"
 		}
 	],
 	"resources": [
@@ -53,6 +61,36 @@
 			"url": "assets/ren.png",
 			"type": "image",
 			"name": "ren_png"
+		},
+		{
+			"url": "images/fortress/zhuteacher.png",
+			"type": "image",
+			"name": "zhuteacher_png"
+		},
+		{
+			"url": "images/frontline/base.png",
+			"type": "image",
+			"name": "base_png"
+		},
+		{
+			"url": "images/frontline/frontlineBg.png",
+			"type": "image",
+			"name": "frontlineBg_png"
+		},
+		{
+			"name": "gas_png",
+			"type": "image",
+			"url": "images/base/gas.png"
+		},
+		{
+			"name": "mineral_png",
+			"type": "image",
+			"url": "images/base/mineral.png"
+		},
+		{
+			"name": "artifact_png",
+			"type": "image",
+			"url": "images/base/artifact.png"
 		}
 	]
 }
