@@ -102,6 +102,13 @@ class GameUtils {
                                         
     }  
 
+
+    //取任意两数之间的随机数
+    public static crateRandom(lowValue:number,highValue:number){
+        var choice=highValue-lowValue+1;
+        return Math.floor(Math.random()*choice+lowValue);
+    }
+
     public static removeElementFromArray(array: egret.Bitmap[], index: number ):void{
         for (let i: number = index; i < array.length; i++){
             array[i] = array[i+1];
